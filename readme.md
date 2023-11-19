@@ -24,7 +24,7 @@ Now in the dependency section, add this :
 ```dependencies
 dependencies 
 {
-    modImplementation 'com.github.drkhodakarami:fluidutils:${fluidutils_version}'
+    modImplementation "com.github.drkhodakarami:fluidutils:${fluidutils_version}"
 }
 ```
 
