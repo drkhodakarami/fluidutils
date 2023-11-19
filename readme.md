@@ -29,7 +29,8 @@ dependencies
 ```
 
 finally, in the gradle.properties add an entry for the proper release version of the library :
-```gradle.properties
-fluidutils_version=[![Release](https://jitpack.io/v/User/Repo.svg)]
+[![Release](https://jitpack.io/v/User/Repo.svg)]
 (https://jitpack.io/#drkhodakarami/Repo)
+```gradle.properties
+fluidutils_version=
 ```
