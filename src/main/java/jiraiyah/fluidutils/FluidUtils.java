@@ -47,7 +47,7 @@ public class FluidUtils
      * @param isMillibucket are we using fabric fluid units in tank or conversion to milli buckets
      * @return returns success or failure of the transfer attempt
      */
-    public static boolean handleTankTransfer(World world, BlockPos pos, LootableContainerBlockEntity entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot, boolean isMillibucket)
+    public static boolean handleTankTransfer(World world, BlockPos pos, ImplementedInventory entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot, boolean isMillibucket)
     {
         if(FluidUtils.transferToTank(world, pos, entity, tank, inputSlot, outputSlot, isMillibucket))
             return true;
@@ -59,7 +59,7 @@ public class FluidUtils
      *
      * @param world the world entity is inside
      * @param pos block position of the entity
-     * @param entity the entity itself, it should be a LootableContainerBlockEntity
+     * @param entity the entity itself, it should implement ImplementedInventory
      * @param tank the SingleVariantStorage of FluidVariant inside the entity
      * @param inputSlot the input slot index to get the full bucket from
      * @param outputSlot the output slot index to put the empty bucket inside
@@ -67,7 +67,7 @@ public class FluidUtils
      *
      * @see #convertDropletsToMb(long)
      */
-    public static boolean transferFromTank(World world, BlockPos pos, LootableContainerBlockEntity entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot)
+    public static boolean transferFromTank(World world, BlockPos pos, ImplementedInventory entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot)
     {
         return transferFromTank(world,pos,entity,tank,inputSlot,outputSlot,true);
     }
@@ -77,7 +77,7 @@ public class FluidUtils
      *
      * @param world the world entity is inside
      * @param pos block position of the entity
-     * @param entity the entity itself, it should be a LootableContainerBlockEntity
+     * @param entity the entity itself, it should implement ImplementedInventory
      * @param tank the SingleVariantStorage of FluidVariant inside the entity
      * @param inputSlot the input slot index to get the full bucket from
      * @param outputSlot the output slot index to put the empty bucket inside
@@ -86,7 +86,7 @@ public class FluidUtils
      *
      * @see #convertDropletsToMb(long)
      */
-    public static boolean transferFromTank(World world, BlockPos pos, LootableContainerBlockEntity entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot, boolean isMilliBucket)
+    public static boolean transferFromTank(World world, BlockPos pos, ImplementedInventory entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot, boolean isMilliBucket)
     {
         // if we can't put the result bucket into the output, then don't do anything and return
         // this will happen when we have empty buckets in output and they don't stack
@@ -146,7 +146,7 @@ public class FluidUtils
      *
      * @param world the world entity is inside
      * @param pos block position of the entity
-     * @param entity the entity itself, it should be a LootableContainerBlockEntity
+     * @param entity the entity itself, it should implement ImplementedInventory
      * @param tank the SingleVariantStorage of FluidVariant inside the entity
      * @param inputSlot the input slot index to get the full bucket from
      * @param outputSlot the output slot index to put the empty bucket inside
@@ -154,7 +154,7 @@ public class FluidUtils
      *
      * @see #convertDropletsToMb(long)
      */
-    public static boolean transferToTank(World world, BlockPos pos, LootableContainerBlockEntity entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot)
+    public static boolean transferToTank(World world, BlockPos pos, ImplementedInventory entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot)
     {
         return transferToTank(world,pos,entity,tank,inputSlot,outputSlot,true);
     }
@@ -164,7 +164,7 @@ public class FluidUtils
      *
      * @param world the world entity is inside
      * @param pos block position of the entity
-     * @param entity the entity itself, it should be a LootableContainerBlockEntity
+     * @param entity the entity itself, it should implement ImplementedInventory
      * @param tank the SingleVariantStorage of FluidVariant inside the entity
      * @param inputSlot the input slot index to get the full bucket from
      * @param outputSlot the output slot index to put the empty bucket inside
@@ -173,7 +173,7 @@ public class FluidUtils
      *
      * @see #convertDropletsToMb(long)
      */
-    public static boolean transferToTank(World world, BlockPos pos, LootableContainerBlockEntity entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot, boolean isMilliBucket)
+    public static boolean transferToTank(World world, BlockPos pos, ImplementedInventory entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot, boolean isMilliBucket)
     {
         // if we can't put the result bucket into the output, then don't do anything and return
         // this will happen when we have a full bucket in output and they don't stack
@@ -243,11 +243,11 @@ public class FluidUtils
     /**
      * Checking if the output slot can accept an item
      *
-     * @param entity the entity itself, it should be a LootableContainerBlockEntity
+     * @param entity the entity itself, it should implement ImplementedInventory
      * @param outputSlot the output index of the entity
      * @return boolean value indicating if we have empty space in the output slot
      */
-    public static boolean isOutputReceivable(LootableContainerBlockEntity entity, int outputSlot)
+    public static boolean isOutputReceivable(ImplementedInventory entity, int outputSlot)
     {
         return entity.getStack(outputSlot).isEmpty() ||
                 entity.getStack(outputSlot).getCount() < entity.getStack(outputSlot).getMaxCount();
@@ -256,11 +256,11 @@ public class FluidUtils
     /**
      * Checks if the item stack inside the given slot index, is the empty bucket item or not
      *
-     * @param entity the entity itself, it should be a LootableContainerBlockEntity
+     * @param entity the entity itself, it should implement ImplementedInventory
      * @param slotIndex the slot index to check the item stack in
      * @return boolean indicating if the stack was empty bucket or not
      */
-    public static boolean isEmptyBucket(LootableContainerBlockEntity entity, int slotIndex)
+    public static boolean isEmptyBucket(ImplementedInventory entity, int slotIndex)
     {
         return entity.getStack(slotIndex).isOf(Items.BUCKET);
     }
@@ -268,12 +268,12 @@ public class FluidUtils
     /**
      * Checks if the tank can receive the amount of fluid we want to transfer into or not.
      *
-     * @param entity the entity itself, it should be a LootableContainerBlockEntity
+     * @param entity the entity itself, it should implement ImplementedInventory
      * @param tank SingleVariantStorage of FluidVariant as the tank itself
      * @param inputSlot the input slot for the liquid container to transfer into tank
      * @return boolean indicating if the tank has enough space or not
      */
-    public static boolean isTankReceivable(LootableContainerBlockEntity entity, SingleVariantStorage<FluidVariant> tank, int inputSlot)
+    public static boolean isTankReceivable(ImplementedInventory entity, SingleVariantStorage<FluidVariant> tank, int inputSlot)
     {
         Storage<FluidVariant> slotStorage = ContainerItemContext.withConstant(entity.getStack(inputSlot)).find(FluidStorage.ITEM);
         var size = slotStorage.iterator().next().getAmount();
