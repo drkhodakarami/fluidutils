@@ -9,14 +9,9 @@ This is a simple yet powerful api mod. If you ever struggled with rendering your
 To use this library inside your own project you need to add the maven repository like this, put this code inside repository seciton of the build.gradle file, Add it in your root build.gradle at the end of repositories:
 
 ```Maven Repository
-dependencyResolutionManagement 
+repositories 
 {
-	repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-	repositories 
-	{
-		mavenCentral()
-		maven { url 'https://jitpack.io' }
-	}
+    maven { url 'https://jitpack.io' }
 }
 ```
 
@@ -29,6 +24,7 @@ dependencies
 ```
 
 finally, in the gradle.properties add an entry for the proper release version of the library :
+
 [![Release](https://jitpack.io/v/drkhodakarami/fluidutils.svg)](https://jitpack.io/#drkhodakarami/fluidutils)
 ```gradle.properties
 fluidutils_version=
