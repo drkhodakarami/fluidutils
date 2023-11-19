@@ -30,7 +30,7 @@ public class FluidUtils
      * @param outputSlot the output slot index to put the empty bucket inside
      * @return returns success or failure of the transfer attempt
      */
-    public static boolean handleTankTransfer(World world, BlockPos pos, LootableContainerBlockEntity entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot)
+    public static boolean handleTankTransfer(World world, BlockPos pos, ImplementedInventory entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot)
     {
         return handleTankTransfer(world,pos,entity,tank,inputSlot,outputSlot,true);
     }
