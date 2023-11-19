@@ -172,4 +172,22 @@ public class FluidStackRenderer implements IIngredientRenderer<FluidStack>
     {
         return height;
     }
+
+    /**
+     *  Checks if the mouse is above the given area or not
+     * @param mouseX The mouse x position
+     * @param mouseY The mouse y position
+     * @param x Left boundary coordinate
+     * @param y Top boundary coordinate
+     * @param offsetX Offset from left boundary to get to the right boundary (boundary width)
+     * @param offsetY Offset from top boundary to get to the bottom boundary (boundary height)
+     * @return a boolean value indicating if the mouse is inside the given boundary or not
+     */
+    public boolean isMouseAboveArea(int mouseX, int mouseY, int x, int y, int offsetX, int offsetY)
+    {
+        return mouseX >= x + offsetX &&
+                mouseX <= x + offsetX + getWidth() &&
+                mouseY >= y + offsetY &&
+                mouseY <= y + offsetY + getHeight();
+    }
 }
