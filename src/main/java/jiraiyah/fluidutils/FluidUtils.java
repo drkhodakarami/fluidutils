@@ -20,22 +20,6 @@ import net.minecraft.world.World;
 public class FluidUtils
 {
     /**
-     * Handle the transfer between an item in a slot and the tank. It will first try to empty the item and put fluid into tank, if failed, it will try reverse. This overload assumes we are using milli bucket system.
-     *
-     * @param world the world entity is inside
-     * @param pos block position of the entity
-     * @param entity the entity itself, it should be a LootableContainerBlockEntity
-     * @param tank the SingleVariantStorage of FluidVariant inside the entity
-     * @param inputSlot the input slot index to get the full bucket from
-     * @param outputSlot the output slot index to put the empty bucket inside
-     * @return returns success or failure of the transfer attempt
-     */
-    public static boolean handleTankTransfer(World world, BlockPos pos, ImplementedInventory entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot)
-    {
-        return handleTankTransfer(world,pos,entity,tank,inputSlot,outputSlot,true);
-    }
-
-    /**
      * Handle the transfer between an item in a slot and the tank. It will first try to empty the item and put fluid into tank, if failed, it will try reverse.
      *
      * @param world the world entity is inside
@@ -47,29 +31,11 @@ public class FluidUtils
      * @param isMillibucket are we using fabric fluid units in tank or conversion to milli buckets
      * @return returns success or failure of the transfer attempt
      */
-    public static boolean handleTankTransfer(World world, BlockPos pos, ImplementedInventory entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot, boolean isMillibucket)
+    public static boolean handleTankTransfer(World world, BlockPos pos, ImplementedInventory entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot)
     {
-        if(FluidUtils.transferToTank(world, pos, entity, tank, inputSlot, outputSlot, isMillibucket))
+        if(FluidUtils.transferToTank(world, pos, entity, tank, inputSlot, outputSlot))
             return true;
-        return FluidUtils.transferFromTank(world, pos, entity, tank, inputSlot, outputSlot, isMillibucket);
-    }
-
-    /**
-     * This will try to transfer fluid from a bucket full of fluid, into a single variant storage tank inside the block entity. This overload assumes we are using milli bucket system.
-     *
-     * @param world the world entity is inside
-     * @param pos block position of the entity
-     * @param entity the entity itself, it should implement ImplementedInventory
-     * @param tank the SingleVariantStorage of FluidVariant inside the entity
-     * @param inputSlot the input slot index to get the full bucket from
-     * @param outputSlot the output slot index to put the empty bucket inside
-     * @return returns success or failure of the transfer attempt
-     *
-     * @see #convertDropletsToMb(long)
-     */
-    public static boolean transferFromTank(World world, BlockPos pos, ImplementedInventory entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot)
-    {
-        return transferFromTank(world,pos,entity,tank,inputSlot,outputSlot,true);
+        return FluidUtils.transferFromTank(world, pos, entity, tank, inputSlot, outputSlot);
     }
 
     /**
@@ -81,12 +47,9 @@ public class FluidUtils
      * @param tank the SingleVariantStorage of FluidVariant inside the entity
      * @param inputSlot the input slot index to get the full bucket from
      * @param outputSlot the output slot index to put the empty bucket inside
-     * @param isMilliBucket are we using fabric fluid units in tank or conversion to milli buckets
      * @return returns success or failure of the transfer attempt
-     *
-     * @see #convertDropletsToMb(long)
      */
-    public static boolean transferFromTank(World world, BlockPos pos, ImplementedInventory entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot, boolean isMilliBucket)
+    public static boolean transferFromTank(World world, BlockPos pos, ImplementedInventory entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot)
     {
         // if we can't put the result bucket into the output, then don't do anything and return
         // this will happen when we have empty buckets in output and they don't stack
@@ -105,19 +68,13 @@ public class FluidUtils
 
         try (Transaction transaction = Transaction.openOuter())
         {
-            // get the bucket size as milli buckets
-            var bucketSize = convertDropletsToMb(FluidConstants.BUCKET);
             // simulate transfer into bucket
             long buckeTransfer = slotStorage.insert(resource, FluidConstants.BUCKET, transaction);
             // actual attempt to transfer the fluid from tank
             long tankTransfer;
-            if(isMilliBucket)
-                tankTransfer = tank.extract(resource, bucketSize, transaction);
-            else
-                tankTransfer = tank.extract(resource, FluidConstants.BUCKET, transaction);
+            tankTransfer = tank.extract(resource, FluidConstants.BUCKET, transaction);
             // if the result is equal
-            if((isMilliBucket && convertDropletsToMb(buckeTransfer) == tankTransfer) ||
-                (!isMilliBucket && buckeTransfer == tankTransfer))
+            if(buckeTransfer == tankTransfer)
             {
                 // finalize transfer from the tank
                 transaction.commit();
@@ -142,24 +99,6 @@ public class FluidUtils
     }
 
     /**
-     * This will try to transfer fluid into an empty bucket, from a single variant storage tank inside the block entity. This overload assumes we are using milli bucket system
-     *
-     * @param world the world entity is inside
-     * @param pos block position of the entity
-     * @param entity the entity itself, it should implement ImplementedInventory
-     * @param tank the SingleVariantStorage of FluidVariant inside the entity
-     * @param inputSlot the input slot index to get the full bucket from
-     * @param outputSlot the output slot index to put the empty bucket inside
-     * @return returns success or failure of the transfer attempt
-     *
-     * @see #convertDropletsToMb(long)
-     */
-    public static boolean transferToTank(World world, BlockPos pos, ImplementedInventory entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot)
-    {
-        return transferToTank(world,pos,entity,tank,inputSlot,outputSlot,true);
-    }
-
-    /**
      * This will try to transfer fluid into an empty bucket, from a single variant storage tank inside the block entity
      *
      * @param world the world entity is inside
@@ -168,12 +107,9 @@ public class FluidUtils
      * @param tank the SingleVariantStorage of FluidVariant inside the entity
      * @param inputSlot the input slot index to get the full bucket from
      * @param outputSlot the output slot index to put the empty bucket inside
-     * @param isMilliBucket are we using fabric fluid units in tank or conversion to milli buckets
      * @return returns success or failure of the transfer attempt
-     *
-     * @see #convertDropletsToMb(long)
      */
-    public static boolean transferToTank(World world, BlockPos pos, ImplementedInventory entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot, boolean isMilliBucket)
+    public static boolean transferToTank(World world, BlockPos pos, ImplementedInventory entity, SingleVariantStorage<FluidVariant> tank, int inputSlot, int outputSlot)
     {
         // if we can't put the result bucket into the output, then don't do anything and return
         // this will happen when we have a full bucket in output and they don't stack
@@ -196,19 +132,13 @@ public class FluidUtils
 
         try (Transaction transaction = Transaction.openOuter())
         {
-            // get the bucket size as milli buckets
-            var bucketSize = convertDropletsToMb(FluidConstants.BUCKET);
             // simulate transfer from bucket out
             long buckeTransfer = slotStorage.extract(resource, FluidConstants.BUCKET, transaction);
             // actual attempt to transfer the fluid into tank
             long tankTransfer;
-            if(isMilliBucket)
-                tankTransfer = tank.insert(resource, bucketSize, transaction);
-            else
-                tankTransfer = tank.insert(resource, FluidConstants.BUCKET, transaction);
+            tankTransfer = tank.insert(resource, FluidConstants.BUCKET, transaction);
             // if the result is equal
-            if((isMilliBucket && convertDropletsToMb(buckeTransfer) == tankTransfer) ||
-                (!isMilliBucket && buckeTransfer == tankTransfer))
+            if(buckeTransfer == tankTransfer)
             {
                 // finalize transfer to the tank
                 transaction.commit();

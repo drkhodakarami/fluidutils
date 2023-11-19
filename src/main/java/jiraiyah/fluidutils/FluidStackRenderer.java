@@ -149,12 +149,12 @@ public class FluidStackRenderer implements IIngredientRenderer<FluidStack>
         long amount = fluidStack.getAmount();
         if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY)
         {
-            MutableText amountString = Text.translatable(modid + ".tooltip.liquid.amount.with.capacity", nf.format(amount), nf.format(capacityMb));
+            MutableText amountString = Text.translatable(modid + ".tooltip.liquid.amount.with.capacity", nf.format(FluidUtils.convertDropletsToMb(amount)), nf.format(capacityMb));
             tooltip.add(amountString.fillStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY)));
         }
         else if (tooltipMode == TooltipMode.SHOW_AMOUNT)
         {
-            MutableText amountString = Text.translatable(modid + ".tooltip.liquid.amount", nf.format(amount));
+            MutableText amountString = Text.translatable(modid + ".tooltip.liquid.amount", nf.format(FluidUtils.convertDropletsToMb(amount)));
             tooltip.add(amountString.fillStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY)));
         }
 
