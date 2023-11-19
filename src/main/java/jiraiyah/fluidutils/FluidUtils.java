@@ -19,6 +19,8 @@ import net.minecraft.world.World;
 
 public class FluidUtils
 {
+    public static long MILLI_BUCKET = FluidConstants.BUCKET / 1000;
+
     /**
      * Handle the transfer between an item in a slot and the tank. It will first try to empty the item and put fluid into tank, if failed, it will try reverse.
      *
