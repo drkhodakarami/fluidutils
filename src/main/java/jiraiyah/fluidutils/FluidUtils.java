@@ -220,7 +220,7 @@ public class FluidUtils
      */
     public static long convertDropletsToMb(long droplets)
     {
-        return droplets / FluidConstants.BUCKET * 1000;
+        return droplets * 1000 / FluidConstants.BUCKET;
     }
 
     /**
@@ -231,6 +231,6 @@ public class FluidUtils
      */
     public static long convetMbToDroplets(long mb)
     {
-        return mb / 1000 * FluidConstants.BUCKET;
+        return mb * FluidConstants.BUCKET / 1000;
     }
 }
